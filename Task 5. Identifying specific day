@@ -1,11 +1,19 @@
 SELECT
-  date
-FROM
-  `bigquery-public-data.covid19_open_data.covid19_open_data`
+  DATE(date) AS date
+FROM (
+  SELECT
+    date,
+    SUM(cumulative_deceased) AS total_deaths
+  FROM
+    `bigquery-public-data.covid19_open_data.covid19_open_data`
+  WHERE
+    country_name = 'Italy'
+    AND date >= '2020-01-01'
+  GROUP BY
+    date
+)
 WHERE
-  country_name="Italy"
-  AND cumulative_deceased>10000
+  total_deaths > 8000
 ORDER BY
   date ASC
-LIMIT
-  1;
+LIMIT 1;
